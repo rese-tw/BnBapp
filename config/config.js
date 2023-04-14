@@ -18,6 +18,7 @@ module.exports = {
     host: process.env.DB_HOST,
     dialect: "mysql",
   },
+  
   SECRET_KEY,
   BCRYPT_WORK_FACTOR,
 };

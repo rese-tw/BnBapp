@@ -1,0 +1,27 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  .NavBar {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    background: 0,0,0,0.5 !important;    
+  }
+
+  #basic-navbar-nav{
+    display: flex;
+    justify-content: space-between;
+    }
+
+  .leftAlignedNav{
+    display: flex;
+    justify-content: left;
+    /* border: 5px solid black; */
+  }
+
+  .rightAlignedNav{
+    display: flex;
+    justify-content: end;
+    /* border: 5px solid black; */
+  }

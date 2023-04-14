@@ -22,6 +22,9 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.2.0",
     "nodemon": "^2.0.22",
+    "react": "^18.2.0",
+    "react-router": "^6.10.0",
+    "react-router-dom": "^6.10.0",
     "sequelize": "^6.30.0"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config/config");
+var models = require("../models");
 
 
 function ensureUserLoggedIn(req, res, next) {
@@ -10,6 +11,33 @@ function ensureUserLoggedIn(req, res, next) {
         next();
     } catch (err) {
         res.status(401).send({ error: 'Unauthorized' });
+    }
+}
+
+async function ensureIsAdmin(req, res, next) {
+    let token = _getToken(req);
+    
+    try { 
+        let payload = jwt.verify(token, SECRET_KEY);
+        const id = payload.userId;
+        //console.log(id)
+
+        const user = await models.User.findOne({
+            where: {
+              id,
+            },
+          });
+          
+        //why is it not finding admin user??
+        //RESOLVED: remember to import var models = require("../models");
+
+        if (user.isAdmin) {
+            next();
+        } else {
+            res.status(403).send({ error: 'Unauthorized.' });
+        }
+    } catch (err) {
+        res.status(401).send({ error: 'Forbidden.' })
     }
 }
 
@@ -26,29 +54,6 @@ function ensureSameUser(req, res, next) {
         }
     } catch (err) {
         res.status(401).send({ error: 'Unauthorized.' });
-    }
-}
-
-async function ensureIsAdmin(req, res, next) {
-    let token = _getToken(req);
-    
-    
-    try { 
-        let payload = jwt.verify(token, SECRET_KEY);
-        /* check if isAdmin in DB is true where payload === userID */
-        const id = payload.userId;
-        let admin = await models.User.findOne({
-            where: {
-                id,
-            }
-        });
-        if (admin.isAdmin === 1) {
-            next();
-        } else {
-            res.status(403).send({ error: 'Unauthorized.' });
-        }
-    } catch (err) {
-        res.status(401).send({ error: 'Forbidden.' })
     }
 }
 

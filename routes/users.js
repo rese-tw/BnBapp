@@ -15,16 +15,25 @@ router.get('/admins', async function(req, res, next) {
   }
 });
 
-/* POST new admin */
-router.post('/admins', ensureIsAdmin,  async function(req, res) {
-  let { username, password, isAdmin } = req.body;
+/* PUT admin */
+router.put('/admins', ensureIsAdmin, async function(req, res) {
+  let { id } = req.body;
   try {
-    const admin = await models.User.create({
-      username,
-      password,
-      isAdmin
+    const user = await models.User.findOne({
+      where: {
+        id,
+      },
     });
-    res.send(admin)
+    if (user.isAdmin) {
+      await user.update({
+        isAdmin: false
+      });
+    } else {
+      await user.update({
+        isAdmin: true
+      });
+    }
+    res.send(user)
   } catch (err) {
     res.status(500).send({ error: err.message })
   }
