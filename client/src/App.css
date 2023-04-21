@@ -1,16 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Montserrat:wght@300;400;500;700&display=swap');
+
 * {
   box-sizing: border-box;
 }
 
+html,
+body,
+#root,
 .App {
+  height: 100%;
+  width: 100%;
+  font-family: "Montserrat", sans-serif;
   text-align: center;
 }
 
-#background {
+ /* #background {
   background-image: url(../public/images/house.jpg);
     background-size: cover;
     background-attachment: local;
     background-position: bottom;
     height: 600PX;
-}
+} */
 

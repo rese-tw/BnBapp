@@ -3,7 +3,6 @@ var router = express.Router();
 var models = require("../models");
 const { ensureIsAdmin } = require('../middleware/guards');
 const { ensureUserLoggedIn } = require('../middleware/guards');
-//const Admin = require('../models/user');
 
 /* GET all admins */
 router.get('/admins', async function(req, res, next) {

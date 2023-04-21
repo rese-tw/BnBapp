@@ -31,11 +31,11 @@ export default function NavBar(props) {
                 
                 <div className='leftAlignedNav'>
                     <Nav className="me-auto">
-                        <Nav.Link href="#home">Booking requests</Nav.Link>
+                        <Nav.Link href="/admin/rooms">Zimmer / Apartments verwalten</Nav.Link>
 
-                        <Nav.Link href="#link">Manage availabilities</Nav.Link>
+                        <Nav.Link href="/admin/bookings">Buchungsanfragen / Verfügbarkeiten verwalten</Nav.Link>
 
-                        <Nav.Link href="#link">Manage users</Nav.Link>
+                        <Nav.Link href="/admin/users">Users verwalten</Nav.Link>
                     </Nav>
                 </div>
                 

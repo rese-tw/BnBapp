@@ -3,10 +3,14 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import Local from './helpers/Local';
 import Api from './helpers/Api';
+import PrivateRoute from './components/PrivateRoute';
+
 import AdminView from './views/AdminView.js';
 import HomeView from './views/HomeView.js';
 import NavBar from './views/NavBar.js';
 import LoginView from './views/LoginView.js';
+import BookingsView from './views/BookingsView.js';
+import UsersView from './views/UsersView.js';
 
 import './App.css';
 
@@ -50,7 +54,23 @@ function App() {
             } 
           /> 
 
-        <Route path='/admin' element={<AdminView />} />
+        <Route path='/admin' element={
+          <PrivateRoute>
+            <AdminView />
+          </PrivateRoute>
+        } />
+
+        <Route path='/bookings' element={
+            <PrivateRoute>
+              <BookingsView />
+            </PrivateRoute>
+        } />
+        
+        <Route path='/users' element={
+            <PrivateRoute>
+                <UsersView />
+            </PrivateRoute>
+        } /> 
 
       </Routes>
 
