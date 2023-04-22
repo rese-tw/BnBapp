@@ -17,8 +17,15 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(Local.getUser());
   const [loginErrorMsg, setLoginErrorMsg] = useState('');
+  const [rooms, setRooms] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getRooms();
+    getUsers();
+  }, []);
 
   async function doLogin(username, password) {
     let myresponse = await Api.loginUser(username, password);
@@ -36,6 +43,24 @@ function App() {
     Local.removeUserInfo();
     setUser(null);
     navigate('/');
+  }
+
+  async function getUsers() {
+    let myresponse = await Api.getUsers();
+    if (myresponse.ok) {
+      setUsers(myresponse.data)
+    } else {
+      console.log(`Error: ${myresponse.error}`)
+    }
+  }
+  
+  async function getRooms() {
+    let myresponse = await Api.getRooms();
+    if (myresponse.ok) {
+      setRooms(myresponse.data)
+    } else {
+      console.log(`Error: ${myresponse.error}`)
+    }
   }
 
   return (

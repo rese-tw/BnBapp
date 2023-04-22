@@ -74,7 +74,7 @@ const EMPTY_FORM = {
             <tbody>
               <tr>
                 <td colSpan={3} >
-                  <InputGroup size="sm" style={{ display:"flex", border: "1px solid black"}}>
+                  <InputGroup size="sm" style={{ display:"flex", flexDirection:"column"}}>
                     <div style={{ display:"flex", gap: "5px", flexGrow: "1"}}>
                       <Form.Group className="mb-3" controlid="startDate">
                         <Form.Label className="hide">Beginn</Form.Label>
@@ -110,7 +110,7 @@ const EMPTY_FORM = {
       
                       </div>
 
-                      <div style={{ display:"flex", gap: "8px", flexGrow: "1"}}>
+                      <div style={{ display:"flex", gap: "8px"}}>
                             <Form.Group className="mb-3" controlid="roomId1">
                               <Form.Check 
                                 type="checkbox"
@@ -166,7 +166,8 @@ const EMPTY_FORM = {
                                  />
                             </Form.Group>
                       </div>
-                      <div style={{ border: "1px solid black", flexGrow: "1"}}>
+
+                      <div style={{ flexGrow: "1"}}>
                             <Button type="button" size="sm" onClick={handleUpdateBlockedDates}>
                                 Zeitraum blockieren
                             </Button>

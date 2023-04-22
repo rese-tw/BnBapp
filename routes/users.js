@@ -5,7 +5,7 @@ const { ensureIsAdmin } = require('../middleware/guards');
 const { ensureUserLoggedIn } = require('../middleware/guards');
 
 /* GET all admins */
-router.get('/admins', async function(req, res, next) {
+router.get('/admins', ensureUserLoggedIn, async function(req, res, next) {
   try {
     const admins = await models.User.findAll();
     res.send(admins)

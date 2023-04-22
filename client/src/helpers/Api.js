@@ -22,13 +22,18 @@ class Api {
         return await this._doFetch('/auth/login', 'POST', body);
     }
 
-    /**
+    
     //Get all users 
     static async getUsers() {
-        return await this._doFetch('/users');
+        return await this._doFetch('/users/admins');
     }
 
-    
+    //Get all users 
+    static async getRooms() {
+        return await this._doFetch('/rooms');
+    }
+
+    /**
     //Get data for user with ID 'userId'
     static async getUser(userId) {
         return await this._doFetch(`/users/${userId}`);

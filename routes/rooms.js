@@ -5,7 +5,7 @@ const { ensureIsAdmin } = require('../middleware/guards');
 const { ensureUserLoggedIn } = require('../middleware/guards');
 
 /* GET all rooms with blocked dates*/
-router.get('/', async function(req, res, next) {
+router.get('/', ensureUserLoggedIn, async function(req, res, next) {
   try {
     const rooms = await models.Room.findAll({ include: models.BlockedDate });
     res.send(rooms)
@@ -15,7 +15,7 @@ router.get('/', async function(req, res, next) {
 });
 
 /* GET room by :id with blocked dates*/
-router.get('/:id', async function(req, res, next) {
+router.get('/:id', ensureUserLoggedIn, async function(req, res, next) {
     let { id } = req.params;
     try {
       const room = await models.Room.findOne({
