@@ -4,13 +4,14 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Local from './helpers/Local';
 import Api from './helpers/Api';
 import PrivateRoute from './components/PrivateRoute';
+import RoomsContext from './context/RoomsContext';
 
-import AdminView from './views/AdminView.js';
-import HomeView from './views/HomeView.js';
-import NavBar from './views/NavBar.js';
-import LoginView from './views/LoginView.js';
-import BookingsView from './views/BookingsView.js';
-import UsersView from './views/UsersView.js';
+import AdminView from './views/AdminView.jsx';
+import HomeView from './views/HomeView.jsx';
+import NavBar from './views/NavBar.jsx';
+import LoginView from './views/LoginView.jsx';
+import BookingsView from './views/BookingsView.jsx';
+import UsersView from './views/UsersView.jsx';
 
 import './App.css';
 
@@ -19,6 +20,13 @@ function App() {
   const [loginErrorMsg, setLoginErrorMsg] = useState('');
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
+
+const roomsContext = { 
+    rooms, 
+    //addRoomCb: addRoom, 
+    addBlockedDatesCb: addBlockedDates,
+    deleteBlockedDatesCb: deleteBlockedDates
+  }
 
   const navigate = useNavigate();
 
@@ -63,6 +71,25 @@ function App() {
     }
   }
 
+  async function addBlockedDates(blockedDates) {
+    let myresponse = await Api.addBlockedDates(blockedDates);
+    if (myresponse.ok) {
+      setRooms(myresponse.data)
+    } else {
+      console.log(`Error: ${myresponse.error}`)
+    }
+  }
+
+  async function deleteBlockedDates(roomId, blockedDatesId) {
+    console.log("App shares:", roomId, blockedDatesId);
+    let myresponse = await Api.deleteBlockedDates(roomId, blockedDatesId);
+    if (myresponse.ok) {
+      setRooms(myresponse.data)
+    } else {
+      console.log(`Error: ${myresponse.error}`)
+    }
+  }
+
   return (
     <div className="App" id="background">
       <NavBar user={user} logoutCb={doLogout} />
@@ -87,7 +114,9 @@ function App() {
 
         <Route path='/bookings' element={
             <PrivateRoute>
-              <BookingsView />
+              <RoomsContext.Provider value={roomsContext}>
+                <BookingsView />
+              </RoomsContext.Provider>
             </PrivateRoute>
         } />
         

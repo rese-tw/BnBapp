@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,16 +12,23 @@ import 'react-dates/lib/css/_datepicker.css';
 import { DateRangePicker } from 'react-dates';
 
 import './BookingsView.css';
+import RoomsContext from "../context/RoomsContext";
+import TableBlockedDates from "../components/TableBlockedDates";
 
 const EMPTY_FORM = {
   startDate: '',
   endDate: '',
-  room: [],
-  description: "",
+  rooms: [],
+  comment: "",
  }
+
+ /* fetch rooms, initialize as global state, 
+ use roomId to initialize object with 0 for every value, 
+ use object for reset function on submit to reset checked to 0 */
 
  export default function BookingsView(props) {
   const [blockedDates, setBlockedDates] = useState(EMPTY_FORM);
+  const { rooms, addBlockedDatesCb } = useContext(RoomsContext);
   //const [focusedInput, setFocusedInput] = useState('')
 
   function handleChange(e) {
@@ -36,23 +43,25 @@ const EMPTY_FORM = {
 
       if ( type === 'checkbox') {
         setBlockedDates( data => ({ ...data, [name]: checked 
-                                                  ? blockedDates.room.includes(value) 
-                                                            ? blockedDates.room.slice() 
-                                                            : [...blockedDates.room, value]
-                                                  : blockedDates.room.includes(value) 
-                                                            ? blockedDates.room.filter(el => el !== value) 
-                                                            : blockedDates.room.slice() }))
-        console.log('checked:', checked)}
+                                                  ? blockedDates.rooms.includes(+value) 
+                                                            ? blockedDates.rooms.slice() 
+                                                            : [...blockedDates.rooms, +value]
+                                                  : blockedDates.rooms.includes(+value) 
+                                                            ? blockedDates.rooms.filter(el => +el !== +value) 
+                                                            : blockedDates.rooms.slice() }))
+      //console.log('checked:', checked)
+    }
   }
     
-  function handleUpdateBlockedDates(e) {
-    //update DB instead!!
+  function handleSubmit(e) {
     e.preventDefault();
-    setBlockedDates(EMPTY_FORM)
+    addBlockedDatesCb(blockedDates);
+    setBlockedDates(EMPTY_FORM);
+    // document.querySelectorAll("div.checkboxes input[name='room']").prop("checked", false);    
     // find a way to target the checked property to reset it to 0 (use FORM.Control controlid??) OR
     // write and trigger function that targets all inputs, checks their type for "check", then resets only those to 0
-    console.log( blockedDates )
   }
+
   
 
   return (
@@ -62,7 +71,9 @@ const EMPTY_FORM = {
         <Col>
           <Row><h2>Verfügbarkeiten managen</h2></Row>
           
-            <Table className="blockedDates" responsive="sm">
+            <TableBlockedDates />
+
+            <Table className="blockDates" responsive="sm">
             <thead>
               <tr>
                 <th>Beginn</th>
@@ -96,82 +107,43 @@ const EMPTY_FORM = {
                           onChange={handleChange} />
                       </Form.Group>
 
-                      <InputGroup className="mb-3" controlid="description" style={{ flexGrow: "1"}}>
+                      <InputGroup className="mb-3" controlid="comment" style={{ flexGrow: "1"}}>
                         <Form.Label className="hide">Beschreibung</Form.Label>
                         <InputGroup.Text className="hide">Beschreibung</InputGroup.Text>
                         <Form.Control 
+                          key="comment"
                           as="textarea" 
                           aria-label="Beschreibung"
-                          name="description"
-                          value={blockedDates.description}
+                          name="comment"
+                          value={blockedDates.comment}
                           onChange={handleChange}
                           placeholder="ergänzende Details" />
                       </InputGroup>
-      
-                      </div>
+                    </div>
 
-                      <div style={{ display:"flex", gap: "8px"}}>
-                            <Form.Group className="mb-3" controlid="roomId1">
+                    <div style={{ display:"flex", gap: "8px"}} className="checkboxes">
+                      {
+                        rooms.map(room => (
+                          <Form.Group className="mb-3" controlid={room.id}>
                               <Form.Check 
+                                key={room.id}
                                 type="checkbox"
-                                name="room"
-                                value="Zimmer1"
+                                name="rooms"
+                                value={room.id}
                                 // checked={checked}  
                                 onChange={handleChange}
-                                label="Zimmer1"
+                                label={room.roomTitle}
                                />
                             </Form.Group>
+                        ))
+                      }
+                    </div>
 
-                            <Form.Group className="mb-3" controlid="roomId2">
-                              <Form.Check 
-                                type="checkbox"
-                                name="room"
-                                value="Zimmer2"
-                                // checked={checked} 
-                                onChange={handleChange}
-                                label="Zimmer2" 
-                                 />
-                            </Form.Group>
-
-                            <Form.Group className="mb-3" controlid="roomId3">
-                              <Form.Check 
-                                type="checkbox"
-                                name="room"
-                                value="Zimmer3"
-                                // checked={checked} 
-                                onChange={handleChange}
-                                label="Zimmer3"
-                                 />
-                            </Form.Group>
-
-                            <Form.Group className="mb-3" controlid="roomId4">
-                              <Form.Check 
-                                type="checkbox"
-                                name="room"
-                                value="Zimmer4"
-                                // checked={checked} 
-                                onChange={handleChange}
-                                label="Zimmer4" 
-                                 />
-                            </Form.Group>
-
-                            <Form.Group className="mb-3" controlid="roomId5">
-                              <Form.Check 
-                                type="checkbox"
-                                name="room"
-                                value="Zimmer5"
-                                // checked={checked} 
-                                onChange={handleChange}
-                                label="Zimmer5" 
-                                 />
-                            </Form.Group>
-                      </div>
-
-                      <div style={{ flexGrow: "1"}}>
-                            <Button type="button" size="sm" onClick={handleUpdateBlockedDates}>
+                    <div style={{ flexGrow: "1"}}>
+                            <Button type="submit" size="sm" onClick={handleSubmit}>
                                 Zeitraum blockieren
                             </Button>
-                      </div>
+                    </div>
                   </InputGroup>
                 </td> 
               </tr>
@@ -209,5 +181,3 @@ const EMPTY_FORM = {
 
   )
 }
-
-

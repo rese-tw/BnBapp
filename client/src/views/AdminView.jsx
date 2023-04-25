@@ -5,8 +5,8 @@ import Local from '../helpers/Local';
 import Api from '../helpers/Api';
 import PrivateRoute from '../components/PrivateRoute';
 
-import BookingsView from './BookingsView.js';
-import UsersView from './UsersView.js';
+import BookingsView from './BookingsView.jsx';
+import UsersView from './UsersView.jsx';
 
 
 export default function AdminView(props) {

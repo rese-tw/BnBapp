@@ -33,6 +33,25 @@ class Api {
         return await this._doFetch('/rooms');
     }
 
+    //Add blocked dates to rooms
+    static async addBlockedDates(blockedDates) {
+        const { startDate, endDate, comment, rooms } =  blockedDates ;
+        let body = {
+            startDate,
+            endDate,
+            comment,
+            rooms
+        }
+        return await this._doFetch('/block/blockDates/rooms', 'POST', body)
+    }
+
+    // PUT blocked dates for a room
+    static async deleteBlockedDates(roomId, blockedDatesId) {
+        let body = { roomId, blockedDatesId };
+        console.log("API shares:", body);
+        return await this._doFetch('/block/unblockDates/rooms', 'PUT', body)
+    }
+        
     /**
     //Get data for user with ID 'userId'
     static async getUser(userId) {
@@ -48,7 +67,7 @@ class Api {
     **/
 
     static async _doFetch(url, method = 'GET', body = null) {
-        console.log('hello from the client')
+        //console.log('hello from the client')
         // Prepare fetch() options
         let options = { 
             method,

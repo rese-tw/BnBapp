@@ -23,8 +23,7 @@ router.get('/:id', ensureUserLoggedIn, async function(req, res, next) {
           id,
         },
         include: models.BlockedDate
-    }
-    );
+    });
       res.send(room)
     } catch (err) {
       res.status(500).send({ error: err.message })
@@ -49,7 +48,7 @@ router.post('/addroom', ensureIsAdmin, async function(req, res, next) {
     });
 
 /* PUT room by :id */
-    router.put('/:id', ensureIsAdmin, async function(req, res) {
+router.put('/:id', ensureIsAdmin, async function(req, res) {
         let { id } = req.params;
         let { roomTitle, dailyRate, description } = req.body;
 
