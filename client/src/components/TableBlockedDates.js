@@ -30,38 +30,44 @@ export default function TableBlockedDates() {
     })
 
   return (
-    <Box p="1rem">
+    <Box paddingBlock="1rem">
 
-        <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" stickyHeader aria-label="blockedDates">
-            <TableHead>
-            <TableRow>
-                <TableCell align="left">Zimmer</TableCell>
-                <TableCell align="left">Beginn</TableCell>
-                <TableCell align="left">Ende</TableCell>
-                <TableCell align="left">Details</TableCell>
-                <TableCell ></TableCell>
-            </TableRow>
-            </TableHead>
-            <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.room} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                            <TableCell component="th" scope="row">{row.room}</TableCell>
-                            <TableCell align="left">{row.startDate}</TableCell>
-                            <TableCell align="left">{row.endDate}</TableCell>
-                            <TableCell align="left">{row.details}</TableCell>
-                            <TableCell style={{display:"none"}}>{row.roomId}</TableCell>
-                            <TableCell style={{display:"none"}}>{row.dateId}</TableCell>
-                            <TableCell align="left">
-                                <IconButton aria-label="delete" onClick={(e)=>deleteBlockedDatesCb(row.roomId, row.dateId)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
+        {
+            rows.length === 0 
+                ? <div><p>Es sind keine Daten geblockt.</p></div> 
+                :   
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} size="small" stickyHeader aria-label="blockedDates">
+                        <TableHead>
+                        <TableRow>
+                            <TableCell align="left">Zimmer</TableCell>
+                            <TableCell align="left">Beginn</TableCell>
+                            <TableCell align="left">Ende</TableCell>
+                            <TableCell align="left">Details</TableCell>
+                            <TableCell ></TableCell>
                         </TableRow>
-                    ))}
-            </TableBody>
-        </Table>
-        </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                                {rows.map((row) => (
+                                    <TableRow key={row.room} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell component="th" scope="row">{row.room}</TableCell>
+                                        <TableCell align="left">{new Date(row.startDate).toISOString().substring(0, 10)}</TableCell>
+                                        <TableCell align="left">{new Date(row.endDate).toISOString().substring(0, 10)}</TableCell>
+                                        <TableCell align="left">{row.details}</TableCell>
+                                        <TableCell style={{display:"none"}}>{row.roomId}</TableCell>
+                                        <TableCell style={{display:"none"}}>{row.dateId}</TableCell>
+                                        <TableCell align="left">
+                                            <IconButton aria-label="delete" onClick={(e)=>deleteBlockedDatesCb(row.roomId, row.dateId)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                    </TableContainer>
+
+        }
     </Box>
   );
 }

@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Room.belongsToMany(models.BlockedDate, { through: "_RoomsBlockedDates" })
+      Room.belongsToMany(models.BlockedDate, { 
+        through: "_RoomsBlockedDates",
+        onDelete: 'cascade'
+       })
     }
   }
   Room.init({

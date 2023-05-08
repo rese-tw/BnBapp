@@ -14,6 +14,8 @@ import { DateRangePicker } from 'react-dates';
 import './BookingsView.css';
 import RoomsContext from "../context/RoomsContext";
 import TableBlockedDates from "../components/TableBlockedDates";
+import AddBlockedDateForm from "../components/AddBlockedDateForm";
+
 
 const EMPTY_FORM = {
   startDate: '',
@@ -34,6 +36,7 @@ const EMPTY_FORM = {
   function handleChange(e) {
       const { name, value, type, checked } = e.target;
       if (type === 'date') {
+        console.log(e.target)
         setBlockedDates( data => ({ ...data, [name]: name==="startDate" 
                                                       ? new Date(value).toISOString().substring(0, 10)  //YYYY-MM-DD
                                                       : new Date(value).toISOString().substring(0, 10) 
@@ -49,7 +52,6 @@ const EMPTY_FORM = {
                                                   : blockedDates.rooms.includes(+value) 
                                                             ? blockedDates.rooms.filter(el => +el !== +value) 
                                                             : blockedDates.rooms.slice() }))
-      //console.log('checked:', checked)
     }
   }
     
@@ -73,7 +75,9 @@ const EMPTY_FORM = {
           
             <TableBlockedDates />
 
-            <Table className="blockDates" responsive="sm">
+            <AddBlockedDateForm />
+
+            {/* <Table className="blockDates" responsive="sm">
             <thead>
               <tr>
                 <th>Beginn</th>
@@ -85,7 +89,7 @@ const EMPTY_FORM = {
             <tbody>
               <tr>
                 <td colSpan={3} >
-                  <InputGroup size="sm" style={{ display:"flex", flexDirection:"column"}}>
+                  <form size="sm" style={{ display:"flex", flexDirection:"column"}}>
                     <div style={{ display:"flex", gap: "5px", flexGrow: "1"}}>
                       <Form.Group className="mb-3" controlid="startDate">
                         <Form.Label className="hide">Beginn</Form.Label>
@@ -144,11 +148,11 @@ const EMPTY_FORM = {
                                 Zeitraum blockieren
                             </Button>
                     </div>
-                  </InputGroup>
+                  </form>
                 </td> 
               </tr>
             </tbody>
-            </Table>
+            </Table> */}
 
             {/* <Col xs={7}  style={{textAlign:'left'}}>
  

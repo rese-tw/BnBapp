@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable("_RoomsBlockedDates", {
+    await queryInterface.createTable("__RoomsBlockedDates", {
       RoomID: {
         type: Sequelize.INTEGER,
         references: {
@@ -11,6 +11,7 @@ module.exports = {
           key: "id",
         },
         allowNull: false,
+        constraints: false
       },
       BlockedDateId: {
         type: Sequelize.INTEGER,
@@ -19,6 +20,7 @@ module.exports = {
           key: "id",
         },
         allowNull: false,
+        constraints: false
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +34,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable("_RoomsBlockedDates");
+    await queryInterface.dropTable("__RoomsBlockedDates");
   }
 };

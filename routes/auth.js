@@ -22,7 +22,7 @@ router.post('/register', async function(req, res, next) {
       }
     });
   
-  /* POST/login existing user. */
+/* POST/login existing user. */
   router.post('/login', async function(req, res, next) {
     const { username, password } = req.body;
     console.log('hello from the back-end')

@@ -7,7 +7,7 @@ const { ensureUserLoggedIn } = require('../middleware/guards');
 /* GET all blockedDates */
 router.get('/', async function(req, res, next) {
   try {
-    const blocked = await models.BlockedDate.findAll();
+    const blocked = await models.BlockedDate.findAll({include: models.Room});
     res.send(blocked)
   } catch (err) {
     res.status(500).send({ error: err.message })
@@ -40,7 +40,7 @@ router.post('/blockDates/rooms', ensureIsAdmin, async function(req, res) {
         endDate, 
         comment
       });
-      const data = await blockedDate.addRooms(rooms)
+      await blockedDate.addRooms(rooms)
 
       const updRooms = await models.Room.findAll({ include: models.BlockedDate });
       res.send(updRooms)
@@ -62,20 +62,57 @@ router.put('/unblockDates/rooms', ensureIsAdmin, async function(req, res) {
       include: models.Room
     });
 
-    let data = blockedDate.Rooms.filter( room => +room.id !== +roomId );
+    const Rooms = blockedDate.Rooms.filter( room => +room.id !== +roomId );
     // console.log("backend happily shares filtered data array:", data)
     
-    await blockedDate.update({
-      Rooms: data
-    });
-    console.log("backend happily shares blockedDate:", blockedDate)
+    await blockedDate.setRooms(Rooms);
+    // console.log("BACKEND SHARING UPDATED ROOMS ARRAY:", Rooms)
+
+    await blockedDate.destroy({
+      where: Rooms.length === 0
+    })
     
-    const updRooms = await models.Room.findAll({ include: models.BlockedDate });
+    const updRooms = await models.Room.findAll();
     res.send(updRooms)
   } catch (err) {
     res.status(500).send({ error: err.message })
   }
 });
+
+/* PUT rooms by blocked dates id */
+// router.put('/unblockDates/rooms', ensureIsAdmin, async function(req, res) {
+//   let { roomId, blockedDatesId } = req.body;
+
+//   try {
+//     const blockedDate = await models.BlockedDate.findOne({
+//       where: {
+//         id: blockedDatesId,
+//       },
+//       include: models.Room
+//     });
+
+//     const id = +roomId;
+//     await blockedDate.removeRoom(id);
+
+//     await blockedDate.destroy({
+//       where: blockedDate.Rooms.length === 0
+//     })
+    
+//     const updRooms = await models.Room.findAll();
+//     res.send(updRooms)
+//   } catch (err) {
+//     res.status(500).send({ error: err.message })
+//   }
+// });
+
+
+
+
+
+
+
+
+
 
 /* PUT blocked date by id */
 router.put('/blockDates', ensureIsAdmin, async function(req, res) {

@@ -83,11 +83,12 @@ const roomsContext = {
   async function deleteBlockedDates(roomId, blockedDatesId) {
     console.log("App shares:", roomId, blockedDatesId);
     let myresponse = await Api.deleteBlockedDates(roomId, blockedDatesId);
-    if (myresponse.ok) {
-      setRooms(myresponse.data)
-    } else {
-      console.log(`Error: ${myresponse.error}`)
-    }
+    getRooms()
+    // if (myresponse.ok) {
+    //   setRooms(myresponse.data)
+    // } else {
+    //   console.log(`Error: ${myresponse.error}`)
+    // }
   }
 
   return (
