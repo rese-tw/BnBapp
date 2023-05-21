@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from "react-bootstrap/esm/Button";
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Table from 'react-bootstrap/Table';
+import Grid from '@mui/material/Unstable_Grid2';
+import { Box } from '@mui/material';
+
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
@@ -17,65 +13,45 @@ import TableBlockedDates from "../components/TableBlockedDates";
 import AddBlockedDateForm from "../components/AddBlockedDateForm";
 
 
-const EMPTY_FORM = {
-  startDate: '',
-  endDate: '',
-  rooms: [],
-  comment: "",
- }
 
- /* fetch rooms, initialize as global state, 
- use roomId to initialize object with 0 for every value, 
- use object for reset function on submit to reset checked to 0 */
 
  export default function BookingsView(props) {
-  const [blockedDates, setBlockedDates] = useState(EMPTY_FORM);
-  const { rooms, addBlockedDatesCb } = useContext(RoomsContext);
-  //const [focusedInput, setFocusedInput] = useState('')
 
-  function handleChange(e) {
-      const { name, value, type, checked } = e.target;
-      if (type === 'date') {
-        console.log(e.target)
-        setBlockedDates( data => ({ ...data, [name]: name==="startDate" 
-                                                      ? new Date(value).toISOString().substring(0, 10)  //YYYY-MM-DD
-                                                      : new Date(value).toISOString().substring(0, 10) 
-                                                      }))} 
-      if (type === 'textarea') {
-        setBlockedDates( data => ({ ...data, [name]: value }))}
-
-      if ( type === 'checkbox') {
-        setBlockedDates( data => ({ ...data, [name]: checked 
-                                                  ? blockedDates.rooms.includes(+value) 
-                                                            ? blockedDates.rooms.slice() 
-                                                            : [...blockedDates.rooms, +value]
-                                                  : blockedDates.rooms.includes(+value) 
-                                                            ? blockedDates.rooms.filter(el => +el !== +value) 
-                                                            : blockedDates.rooms.slice() }))
-    }
-  }
-    
-  function handleSubmit(e) {
-    e.preventDefault();
-    addBlockedDatesCb(blockedDates);
-    setBlockedDates(EMPTY_FORM);
     // document.querySelectorAll("div.checkboxes input[name='room']").prop("checked", false);    
     // find a way to target the checked property to reset it to 0 (use FORM.Control controlid??) OR
     // write and trigger function that targets all inputs, checks their type for "check", then resets only those to 0
-  }
+  
 
   
 
   return (
-    <Container className="BookingsView">
-      <Row>Monatskalender mit geblockten/reservierten Zeitraeumen aus DB</Row>
-      <Row>
-        <Col>
-          <Row><h2>Verfügbarkeiten managen</h2></Row>
-          
-            <TableBlockedDates />
+    <Box className="BookingsView" width="100%" p="1rem 6%">
+      <Grid container spacing={2}>
+        <Grid xs></Grid>
 
-            <AddBlockedDateForm />
+        <Grid xs={12} md={8}>
+                <Grid xs={12}>
+                  Monatskalender mit geblockten/reservierten Zeitraeumen aus DB
+                </Grid>
+
+                <Grid container columnSpacing={2}>
+                    <Grid xs={12} md={7} p="1rem">
+                        <h2>Verfügbarkeiten managen</h2>
+                        <TableBlockedDates p="1rem"/>
+                        <AddBlockedDateForm />
+                    </Grid>
+
+                    <Grid xs p="1rem">
+                        <h2>Buchungsanfragen</h2>
+                        Tabelle: Name, Adresse, Telefonnummer, Email, Zeitraum, Zahlungseingang, bestaetigt
+                    </Grid>
+                </Grid>  
+        </Grid>
+                
+        <Grid xs></Grid>
+      </Grid>
+
+            
 
             {/* <Table className="blockDates" responsive="sm">
             <thead>
@@ -174,14 +150,8 @@ const EMPTY_FORM = {
             Liste mit geblockten Zeitraeumen
             </Col> 
             */}
-        </Col>
-        
-        <Col>
-            <h2>Buchungsanfragen</h2>
-            Tabelle: Name, Adresse, Telefonnummer, Email, Zeitraum, Zahlungseingang, bestaetigt
-        </Col>
-      </Row>
-    </Container>
+       
+    </Box>
 
   )
 }

@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var roomsRouter = require('./routes/rooms');
 var blockedDatesRouter = require('./routes/block');
+var imagesRouter = require('./routes/images')
 
 
 var app = express();
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);
 app.use('/api/block', blockedDatesRouter);
+app.use('/api/images', imagesRouter)
 
 
 

@@ -4,15 +4,41 @@ var models = require("../models");
 const { ensureIsAdmin } = require('../middleware/guards');
 const { ensureUserLoggedIn } = require('../middleware/guards');
 
-/* GET all rooms with blocked dates*/
+/* GET all rooms with blocked dates and images */
 router.get('/', ensureUserLoggedIn, async function(req, res, next) {
+  try {
+    const rooms = await models.Room.findAll({ 
+      include: [
+        {
+          all: true
+        }
+      ]
+    });
+    res.send(rooms)
+  } catch (err) {
+    res.status(500).send({ error: err.message })
+  }
+});
+
+/* GET all rooms with blocked dates */
+router.get('/block', ensureUserLoggedIn, async function(req, res, next) {
   try {
     const rooms = await models.Room.findAll({ include: models.BlockedDate });
     res.send(rooms)
   } catch (err) {
     res.status(500).send({ error: err.message })
   }
-});
+})
+
+/* GET all rooms with images*/
+router.get('/img', ensureUserLoggedIn, async function(req, res, next) {
+  try {
+    const rooms = await models.Room.findAll({ include: models.Image });
+    res.send(rooms)
+  } catch (err) {
+    res.status(500).send({ error: err.message })
+  }
+})
 
 /* GET room by :id with blocked dates*/
 router.get('/:id', ensureUserLoggedIn, async function(req, res, next) {

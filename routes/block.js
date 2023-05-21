@@ -53,6 +53,7 @@ router.post('/blockDates/rooms', ensureIsAdmin, async function(req, res) {
 /* PUT rooms by blocked dates id */
 router.put('/unblockDates/rooms', ensureIsAdmin, async function(req, res) {
   let { roomId, blockedDatesId } = req.body;
+  console.log("******roomId:", roomId, "blockedDatesId:", blockedDatesId)
 
   try {
     const blockedDate = await models.BlockedDate.findOne({
@@ -61,18 +62,24 @@ router.put('/unblockDates/rooms', ensureIsAdmin, async function(req, res) {
       },
       include: models.Room
     });
+    console.log("******blockedDate:", blockedDate.Rooms)
 
     const Rooms = blockedDate.Rooms.filter( room => +room.id !== +roomId );
-    // console.log("backend happily shares filtered data array:", data)
-    
-    await blockedDate.setRooms(Rooms);
-    // console.log("BACKEND SHARING UPDATED ROOMS ARRAY:", Rooms)
+    console.log("******Rooms:", Rooms)
 
-    await blockedDate.destroy({
-      where: Rooms.length === 0
-    })
+    if (Rooms.length === 0) {
+      await blockedDate.destroy()
+    } else {
+      await blockedDate.setRooms(Rooms);
+      console.log("******blockedDate after updating rooms:", blockedDate.Rooms)
+    }
+
+    // await blockedDate.destroy({
+    //   where: Rooms.length === 0
+    // })
     
     const updRooms = await models.Room.findAll();
+    console.log("******updRooms:", updRooms)
     res.send(updRooms)
   } catch (err) {
     res.status(500).send({ error: err.message })
@@ -104,15 +111,6 @@ router.put('/unblockDates/rooms', ensureIsAdmin, async function(req, res) {
 //     res.status(500).send({ error: err.message })
 //   }
 // });
-
-
-
-
-
-
-
-
-
 
 /* PUT blocked date by id */
 router.put('/blockDates', ensureIsAdmin, async function(req, res) {

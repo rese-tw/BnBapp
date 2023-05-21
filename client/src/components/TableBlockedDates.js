@@ -17,7 +17,7 @@ export default function TableBlockedDates() {
     const { rooms, deleteBlockedDatesCb } = useContext(RoomsContext);
 
     function createData(room, roomId, startDate, endDate, details, dateId) {
-        return { room, roomId, startDate, endDate, details, dateId};
+        return { room, roomId, startDate, endDate, details, dateId };
       }
     
     const rows = []
@@ -39,23 +39,23 @@ export default function TableBlockedDates() {
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} size="small" stickyHeader aria-label="blockedDates">
                         <TableHead>
-                        <TableRow>
-                            <TableCell align="left">Zimmer</TableCell>
-                            <TableCell align="left">Beginn</TableCell>
-                            <TableCell align="left">Ende</TableCell>
-                            <TableCell align="left">Details</TableCell>
-                            <TableCell ></TableCell>
-                        </TableRow>
+                            <TableRow>
+                                <TableCell align="left">Zimmer</TableCell>
+                                <TableCell align="left">Beginn</TableCell>
+                                <TableCell align="left">Ende</TableCell>
+                                <TableCell align="left">Details</TableCell>
+                                <TableCell ></TableCell>
+                            </TableRow>
                         </TableHead>
                         <TableBody>
                                 {rows.map((row) => (
-                                    <TableRow key={row.room} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableRow key={`${row.roomId}, ${row.dateId}`} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                         <TableCell component="th" scope="row">{row.room}</TableCell>
                                         <TableCell align="left">{new Date(row.startDate).toISOString().substring(0, 10)}</TableCell>
                                         <TableCell align="left">{new Date(row.endDate).toISOString().substring(0, 10)}</TableCell>
                                         <TableCell align="left">{row.details}</TableCell>
-                                        <TableCell style={{display:"none"}}>{row.roomId}</TableCell>
-                                        <TableCell style={{display:"none"}}>{row.dateId}</TableCell>
+                                        {/* <TableCell style={{display:"none"}}>{row.roomId}</TableCell>
+                                        <TableCell style={{display:"none"}}>{row.dateId}</TableCell> */}
                                         <TableCell align="left">
                                             <IconButton aria-label="delete" onClick={(e)=>deleteBlockedDatesCb(row.roomId, row.dateId)}>
                                                 <DeleteIcon />

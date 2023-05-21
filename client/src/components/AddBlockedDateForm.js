@@ -28,7 +28,17 @@ const EMPTY_FORM = {
 export default function AddBlockedDateForm() {
     const [blockedDates, setBlockedDates] = useState(EMPTY_FORM);
     const { rooms, addBlockedDatesCb } = useContext(RoomsContext);
+    const [checkedState, setCheckedState] = useState([])
     
+    useEffect(() => {
+        resetCheckedState()
+      }, [rooms]);
+    
+    function resetCheckedState() {
+        const initialCheckedState = new Array(rooms.length).fill(false);
+        setCheckedState(initialCheckedState)
+    }
+
     function handleStartDateChange(newDate) {
         setBlockedDates(data => ({...data, startDate: new Date(newDate)}))
     }
@@ -37,36 +47,49 @@ export default function AddBlockedDateForm() {
         setBlockedDates(data => ({...data, endDate: new Date(newDate)}))
     }
 
-    function handleChange(e) {
-        const { name, value, type, checked } = e.target;
+    function handleCommentChange(e) {
+        const { name, value } = e.target;
         if (name === 'comment') {
             setBlockedDates( data => ({ ...data, [name]: value }))}
   
-        if (type === 'checkbox') {
-            setBlockedDates( data => ({ ...data, [name.slice(0,5)]: checked 
-                                                    ? blockedDates.rooms.includes(+value) 
-                                                              ? blockedDates.rooms.slice() 
-                                                              : [...blockedDates.rooms, +value]
-                                                    : blockedDates.rooms.includes(+value) 
-                                                              ? blockedDates.rooms.filter(el => +el !== +value) 
-                                                              : blockedDates.rooms.slice() }));
-            }
-      }
-    
+        // if (type === 'checkbox') {
+        //     setBlockedDates( data => ({ ...data, [name.slice(0,5)]: checked 
+        //                                             ? blockedDates.rooms.includes(+value) 
+        //                                                       ? blockedDates.rooms.slice() 
+        //                                                       : [...blockedDates.rooms, +value]
+        //                                             : blockedDates.rooms.includes(+value) 
+        //                                                       ? blockedDates.rooms.filter(el => +el !== +value) 
+        //                                                       : blockedDates.rooms.slice() }));
+        //     }
+    }
+
+    function handleCheckedChange(roomIx, e) {
+        const updatedCheckedState = checkedState.map((item, index) =>
+        index === roomIx ? !item : item 
+        );
+        setCheckedState(updatedCheckedState);
+
+        const { name, value, checked } = e.target;
+        setBlockedDates( data => ({ ...data, [name.slice(0,5)]: checked 
+            ? blockedDates.rooms.includes(+value) 
+                      ? blockedDates.rooms.slice() 
+                      : [...blockedDates.rooms, +value]
+            : blockedDates.rooms.includes(+value) 
+                      ? blockedDates.rooms.filter(el => +el !== +value) 
+                      : blockedDates.rooms.slice() }));
+    }
       
     function handleSubmit(e) {
       e.preventDefault();
       addBlockedDatesCb(blockedDates);
       setBlockedDates(EMPTY_FORM);
-    //   setChecked(false)
+      resetCheckedState()
     }
-    
 
   return (
     <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap: "1rem"}}>
                     <div style={{ display:"flex"}}>
                         <div size="sm" style={{ display:"flex", flexDirection:"row", gap: "1rem", width: "100%"}}>
-
                             <div style={{ display:"flex", flexDirection:"column", gap: "1rem"}}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker 
@@ -89,9 +112,10 @@ export default function AddBlockedDateForm() {
 
                             <div style={{ display:"flex", flexGrow:"1"} }>
                                 <TextField
+                                    key="comment"
                                     name="comment"
                                     value={blockedDates.comment}
-                                    onChange={handleChange}
+                                    onChange={handleCommentChange}
                                     id="outlined-multiline-flexible"
                                     label="ergänzende Details"
                                     multiline
@@ -103,18 +127,19 @@ export default function AddBlockedDateForm() {
                     </div>
                     <div style={{ display:"flex", gap: "1rem"}}>
                         {
-                            rooms.map(room => (
+                            rooms.map((room, index) => (
                             <FormGroup>
                                 <FormControlLabel
                                         control={
                                             <Checkbox 
+                                                key={room.id}
+                                                type="checkbox"
                                                 name={`rooms_${room.roomTitle}`}
-                                                // checked={room.Title}
+                                                checked={!!checkedState[index]} // SINCE THE CHECKEDSTATE IS INITIALIZED AS EMPTY ARRAY, REACT CONSIDERS IT UNCONTROLLED, BUT SINCE IT IS CONTROLLED, THE DOUBLE !! IS NEEDED TO AVOID AN ERROR SWITICHING FROM UNCONTROLLED TO CONTROLLED
                                                 value={room.id}
                                                 icon={<PanoramaFishEyeIcon />} 
                                                 checkedIcon={<RemoveCircleIcon color="error"/>}
-                                                onChange={handleChange}  
-                                                //onSubmit={handleReset}
+                                                onChange={(e)=>handleCheckedChange(index, e)}  
                                             />
                                         }
                                         label={room.roomTitle}

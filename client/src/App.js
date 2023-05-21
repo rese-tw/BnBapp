@@ -12,6 +12,7 @@ import NavBar from './views/NavBar.jsx';
 import LoginView from './views/LoginView.jsx';
 import BookingsView from './views/BookingsView.jsx';
 import UsersView from './views/UsersView.jsx';
+import ManageRoomsView from './views/ManageRoomsView.jsx'
 
 import './App.css';
 
@@ -23,7 +24,7 @@ function App() {
 
 const roomsContext = { 
     rooms, 
-    //addRoomCb: addRoom, 
+    addRoomCb: addRoom, 
     addBlockedDatesCb: addBlockedDates,
     deleteBlockedDatesCb: deleteBlockedDates
   }
@@ -61,6 +62,38 @@ const roomsContext = {
       console.log(`Error: ${myresponse.error}`)
     }
   }
+
+  async function addRoom(values, onSubmitProps) {
+    let myresponse = await Api.addRoom(values);
+    if (myresponse.ok) {
+      console.log(`Room added!`)
+    } else {
+      console.log(`Error: ${myresponse.error}`)
+    }
+
+    let RoomId = myresponse.data.id
+
+    for (let image of values.images) {
+      // console.log(`type of image:`, typeof image)
+      // console.log(`RoomId:`, RoomId)
+      let myresponse2 = await Api.addImage(image, RoomId);
+      if (myresponse2.ok) {
+        console.log(`Image added!`)
+      } else {
+        console.log(`Error: ${myresponse2.error}`)
+      }
+    }
+
+    getRooms()
+    // console.log(rooms)
+
+    //this will allow to append image to form info
+    // const formData = new FormData();
+    // for (let value in values) {
+    //   formData.append(value, values[value])
+    // }
+    // formData.append('images', values.images);
+  }
   
   async function getRooms() {
     let myresponse = await Api.getRooms();
@@ -81,7 +114,7 @@ const roomsContext = {
   }
 
   async function deleteBlockedDates(roomId, blockedDatesId) {
-    console.log("App shares:", roomId, blockedDatesId);
+    // console.log("App shares:", roomId, blockedDatesId);
     let myresponse = await Api.deleteBlockedDates(roomId, blockedDatesId);
     getRooms()
     // if (myresponse.ok) {
@@ -108,12 +141,20 @@ const roomsContext = {
           /> 
 
         <Route path='/admin' element={
-          <PrivateRoute>
-            <AdminView />
-          </PrivateRoute>
+            <PrivateRoute>
+              <AdminView />
+            </PrivateRoute>
         } />
 
-        <Route path='/bookings' element={
+        <Route path='/admin/rooms' element={
+            <PrivateRoute>
+              <RoomsContext.Provider value={roomsContext}>
+                <ManageRoomsView />
+              </RoomsContext.Provider>
+            </PrivateRoute>
+        } />
+
+        <Route path='/admin/bookings' element={
             <PrivateRoute>
               <RoomsContext.Provider value={roomsContext}>
                 <BookingsView />
@@ -121,7 +162,7 @@ const roomsContext = {
             </PrivateRoute>
         } />
         
-        <Route path='/users' element={
+        <Route path='/admin/users' element={
             <PrivateRoute>
                 <UsersView />
             </PrivateRoute>

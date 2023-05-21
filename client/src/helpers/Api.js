@@ -21,16 +21,38 @@ class Api {
         let body = { username, password };
         return await this._doFetch('/auth/login', 'POST', body);
     }
-
     
     //Get all users 
     static async getUsers() {
         return await this._doFetch('/users/admins');
     }
 
-    //Get all users 
+    //Get all rooms 
     static async getRooms() {
         return await this._doFetch('/rooms');
+    }
+
+    //Add a new room
+    static async addRoom(values) {
+        const {roomTitle, dailyRate, description} = values;
+        let body = {
+            roomTitle, 
+            dailyRate,
+            description
+        }
+        return await this._doFetch('/rooms/addroom', 'POST', body)
+    }
+
+    //Add images to room
+    static async addImage(image, RoomId) {
+        const {name, path} = image;
+        // console.log(`backend shares name and path:`, name, path)
+        let body = {
+            name, 
+            path,
+            RoomId
+        }
+        return await this._doFetch('/images/addimage', 'POST', body)
     }
 
     //Add blocked dates to rooms
@@ -48,7 +70,7 @@ class Api {
     // PUT blocked dates for a room
     static async deleteBlockedDates(roomId, blockedDatesId) {
         let body = { roomId, blockedDatesId };
-        console.log("API shares:", body);
+        // console.log("API shares:", body);
         return await this._doFetch('/block/unblockDates/rooms', 'PUT', body)
     }
         
@@ -67,7 +89,6 @@ class Api {
     **/
 
     static async _doFetch(url, method = 'GET', body = null) {
-        //console.log('hello from the client')
         // Prepare fetch() options
         let options = { 
             method,
